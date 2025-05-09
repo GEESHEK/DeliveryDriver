@@ -1,25 +1,30 @@
-using System;
 using UnityEngine;
 
 public class Delivery : MonoBehaviour
 {
+  private bool hasPackage;
+  [SerializeField] private float destoryDelay = 0.5f;
+  
   private void OnCollisionEnter2D(Collision2D other)
   {
     Debug.Log("that hurts, drive better");
   }
 
-  // other gives us the other thing we bumped into
+  // other gives us the other thing (gameObject) we bumped into
   private void OnTriggerEnter2D(Collider2D other)
   {
     // use tag to categorize objects
-    switch (other.tag)
+    if (other.tag == "Package" && !hasPackage)
     {
-      case "Package":
-        Debug.Log("Package picked up");
-        break;
-      case "Customer":
-        Debug.Log("Delivered package");
-        break;
+      Debug.Log("Package picked up");
+      hasPackage = true;
+      Destroy(other.gameObject, destoryDelay);
+    }
+
+    if (other.tag == "Customer" && hasPackage)
+    {
+      Debug.Log("Delivered package");
+      hasPackage = false;
     }
   }
 }
